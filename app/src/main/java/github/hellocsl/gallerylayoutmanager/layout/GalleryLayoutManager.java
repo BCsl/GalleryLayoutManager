@@ -1,32 +1,39 @@
 package github.hellocsl.gallerylayoutmanager.layout;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+
+import github.hellocsl.gallerylayoutmanager.BuildConfig;
 
 /**
  * Created by chensuilun on 2016/11/18.
  */
 
 public class GalleryLayoutManager extends RecyclerView.LayoutManager {
-
+    private static final String TAG = "GalleryLayoutManager";
     private final Context mContext;
     /* Consistent size applied to all child views */
-    private int mDecoratedChildWidth;
-    private int mDecoratedChildHeight;
+//    private int mDecoratedChildWidth;
+//    private int mDecoratedChildHeight;
 
-    private int mSelectionPosition = 0;
-    private int mFirstVisiblePosition = 0;
-    private int mSelectedIndex;
+    //    private int mSelectionPosition = 0;
+    private int mFirstVisiblePosition = -1;
+    private int mLastVisiblePos = -1;
+//    private int mSelectedIndex;
 
 
     public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
 
     public static final int VERTICAL = OrientationHelper.VERTICAL;
+
+    private State mState;
 
     /**
      * Current orientation. Either {@link #HORIZONTAL} or {@link #VERTICAL}
@@ -49,101 +56,168 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
+    public RecyclerView.LayoutParams generateLayoutParams(Context c, AttributeSet attrs) {
+        return new LayoutParams(c, attrs);
+    }
+
+    @Override
+    public RecyclerView.LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
+        if (lp instanceof ViewGroup.MarginLayoutParams) {
+            return new LayoutParams((ViewGroup.MarginLayoutParams) lp);
+        } else {
+            return new LayoutParams(lp);
+        }
+    }
+
+    @Override
+    public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
+        return lp instanceof LayoutParams;
+    }
+
+    @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getItemCount() == 0) {
             detachAndScrapAttachedViews(recycler);
             return;
         }
-        if (state.isPreLayout()) { //跳过preLayout，preLayout主要用于支持动画，暂时先使用自带的简单的fading
+        if (state.isPreLayout()) { //跳过preLayout，preLayout主要用于支持动画
             return;
         }
-        if (getChildCount() == 0) {
-            //Scrap measure one child
-            View scrap = recycler.getViewForPosition(0);
-            addView(scrap);
-            measureChildWithMargins(scrap, 0, 0);
-
-            mDecoratedChildWidth = getDecoratedMeasuredWidth(scrap);
-            mDecoratedChildHeight = getDecoratedMeasuredHeight(scrap);
-
-            detachAndScrapView(scrap, recycler);
-        }
-
-        //Clear all attached views into the recycle bin
         detachAndScrapAttachedViews(recycler);
-        fillCover(recycler, state);
+        mFirstVisiblePosition = 0;
+        mLastVisiblePos = 0;
+        fillCover(recycler, state, 0);
     }
 
-    private void fillCover(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (getItemCount() == 0) {
-            detachAndScrapAttachedViews(recycler);
-            return;
-        }
-        SparseArray<View> viewCache = new SparseArray<View>(getChildCount());
-        for (int i = 0; i < getChildCount(); i++) {
-            int position = positionOfIndex(i);
-            final View child = getChildAt(i);
-            viewCache.put(position, child);
-        }
 
-        for (int i = 0; i < viewCache.size(); i++) {
-            detachView(viewCache.valueAt(i));
+    private void fillCover(RecyclerView.Recycler recycler, RecyclerView.State state, int scrollDelta) {
+        if (getItemCount() == 0) {
+            return;
         }
 
         if (mOrientation == HORIZONTAL) {
-            fillWithHorizontal(recycler, state, viewCache);
+            fillWithHorizontal(recycler, state, scrollDelta);
         } else {
-            fillWithVertical(recycler, state, viewCache);
+            fillWithVertical(recycler, state, scrollDelta);
         }
 
-        //...回收没有被重新attach的View
-        for (int i = 0; i < viewCache.size(); i++) {
-            final View removingView = viewCache.valueAt(i);
-            recycler.recycleView(removingView);
-
-        }
     }
 
-    private int positionOfIndex(int i) {
-        return mFirstVisiblePosition + i;
-    }
 
-    private void fillWithVertical(RecyclerView.Recycler recycler, RecyclerView.State state, SparseArray<View> viewCache) {
+    private void fillWithVertical(RecyclerView.Recycler recycler, RecyclerView.State state, int dy) {
         // TODO: 2016/11/19
     }
 
-    private void fillWithHorizontal(RecyclerView.Recycler recycler, RecyclerView.State state, SparseArray<View> viewCache) {
+    /**
+     * @param recycler
+     * @param state
+     */
+    private void fillWithHorizontal(RecyclerView.Recycler recycler, RecyclerView.State state, int dx) {
+        int leftEdge = getOrientationHelper().getStartAfterPadding();
         int rightEdge = getOrientationHelper().getEndAfterPadding();
-        int leftOffset = (getHorizontalSpace() - mDecoratedChildWidth) / 2;
-        int topOffset = (getVerticalSpace() - mDecoratedChildHeight) / 2;
-        View scrap;
-        int curPosition = mSelectionPosition;
-        //layout from Center to RightEdge
-        for (int curRight = 0; curRight < rightEdge && curPosition < getItemCount() - 1; curPosition++) {
-            scrap = viewCache.get(curPosition);
-            if (scrap == null) {
-                scrap = recycler.getViewForPosition(0);
-                addView(scrap);
-            } else {
-                attachView(scrap);
-                viewCache.remove(curPosition);
-            }
-            layoutDecorated(scrap, leftOffset, topOffset, leftOffset + mDecoratedChildWidth, topOffset + mDecoratedChildHeight);
-            curRight = getOrientationHelper().getDecoratedEnd(scrap);
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "fillWithHorizontal() called with: dx = [" + dx + "],leftEdge:" + leftEdge + ",rightEdge:" + rightEdge);
         }
-        curPosition = mSelectionPosition - 1;
-        //layout from Center to left
-        for (int curRight = leftOffset; curRight > getOrientationHelper().getStartAfterPadding() && curPosition > 0; curPosition--) {
-            scrap = viewCache.get(curPosition);
-            if (scrap == null) {
-                scrap = recycler.getViewForPosition(curPosition);
-                addView(scrap);
-            } else {
-                attachView(scrap);
-                viewCache.remove(curPosition);
+        //1.根据滑动方向，回收越界子View
+        View child;
+        if (getChildCount() > 0) {
+            if (dx >= 0) {
+                for (int i = 0; i < getChildCount(); i++) {
+                    child = getChildAt(i);
+                    if (getDecoratedRight(child) - dx < leftEdge) {
+                        removeAndRecycleView(child, recycler);
+                        mFirstVisiblePosition++;
+                        if (BuildConfig.DEBUG) {
+                            Log.d(TAG, "fillWithHorizontal:remove position:" + getPosition(child) + " mFirstVisiblePosition change to:" + mFirstVisiblePosition);
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            } else { //dx<0
+                for (int i = getChildCount() - 1; i >= 0; i--) {
+                    child = getChildAt(i);
+                    if (getDecoratedLeft(child) - dx > rightEdge) {
+                        removeAndRecycleView(child, recycler);
+                        mLastVisiblePos--;
+                        if (BuildConfig.DEBUG) {
+                            Log.d(TAG, "fillWithHorizontal:remove position:" + getPosition(child) + "mLastVisiblePos change to:" + mLastVisiblePos);
+                        }
+                    }
+                }
             }
-            layoutDecorated(scrap, curRight - mDecoratedChildWidth, topOffset, curRight, topOffset + mDecoratedChildHeight);
-            curRight = getOrientationHelper().getDecoratedStart(scrap);
+
+        }
+        //开始进行布局的位置
+        int startPosition = mFirstVisiblePosition;
+        int startOffset = -1;
+        int scrapWidth, scrapHeight;
+        Rect scrapRect = new Rect();
+        int height = getVerticalSpace();
+        int topOffset;
+        View scrap;
+        //2.根据不同滑动方向，为空余位置进行布局
+        if (dx >= 0) {
+            if (getChildCount() != 0) {
+                View lastView = getChildAt(getChildCount() - 1);
+                startPosition = getPosition(lastView) + 1; //下一个View的Position
+                startOffset = getDecoratedRight(lastView);
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "fillWithHorizontal:to right startPosition:" + startPosition + ",startOffset:" + startOffset + ",rightEdge:" + rightEdge);
+                }
+            }
+            //考虑边界和数量
+            for (int i = startPosition; i < getItemCount() && startOffset < rightEdge; i++) {
+                scrap = recycler.getViewForPosition(i);
+                addView(scrap);
+                measureChildWithMargins(scrap, 0, 0);
+                scrapWidth = getDecoratedMeasuredWidth(scrap);
+                scrapHeight = getDecoratedMeasuredHeight(scrap);
+                topOffset = (int) (getPaddingTop() + (height - scrapHeight) / 2.0f);
+                if (startOffset == -1 && startPosition == 0) {
+                    //第0个View，居中处理
+                    int left = (int) (getPaddingLeft() + (getHorizontalSpace() - scrapWidth) / 2.f);
+                    scrapRect.set(left, topOffset, left + scrapWidth, topOffset + scrapHeight);
+                } else {
+                    scrapRect.set(startOffset, topOffset, startOffset + scrapWidth, topOffset + scrapHeight);
+                }
+                layoutDecorated(scrap, scrapRect.left, scrapRect.top, scrapRect.right, scrapRect.bottom);
+                startOffset = scrapRect.right;
+                ((LayoutParams) scrap.getLayoutParams()).mPosition = i;
+                mLastVisiblePos = i;
+                getState().mItemsFrames.put(i, scrapRect);
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "fillWithHorizontal,layout:mLastVisiblePos: " + mLastVisiblePos);
+                }
+            }
+        } else {
+            //dx<0
+            if (getChildCount() > 0) {
+                View firstView = getChildAt(0);
+                startPosition = getPosition(firstView) - 1; //前一个View的position
+                startOffset = getDecoratedLeft(firstView);
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "fillWithHorizontal:to left startPosition:" + startPosition + ",startOffset:" + startOffset + ",leftEdge:" + leftEdge + ",child count:" + getChildCount());
+                }
+            }
+            //考虑边界和数量
+            for (int i = startPosition; i >= 0 && startOffset > leftEdge; i--) {
+                scrapRect = getState().mItemsFrames.get(i);
+                scrap = recycler.getViewForPosition(i);
+                //顺序很重要,举个例子，本来添加顺序是【0，1，2，3】没错，但手指右滑后，需要不断在左边空白填充View，不指定index的情况下就可能就会出现这样的情况【3，0，1，2】
+                addView(scrap, 0);
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "fillWithHorizontal: add view for :" + i + ",child count:" + getChildCount());
+                }
+                measureChildWithMargins(scrap, 0, 0);
+                scrapWidth = scrapRect.right - scrapRect.left;
+                scrapHeight = scrapRect.bottom - scrapRect.top;
+                topOffset = (int) (getPaddingTop() + (height - scrapHeight) / 2.0f);
+                layoutDecorated(scrap, startOffset - scrapWidth, topOffset, startOffset, topOffset + scrapHeight);
+                startOffset -= scrapWidth;
+                ((LayoutParams) scrap.getLayoutParams()).mPosition = i;
+                mFirstVisiblePosition = i;
+            }
         }
     }
 
@@ -153,6 +227,34 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
 
     private int getVerticalSpace() {
         return getHeight() - getPaddingBottom() - getPaddingTop();
+    }
+
+    public State getState() {
+        if (mState == null) {
+            mState = new State();
+        }
+        return mState;
+    }
+
+    class State {
+        /**
+         * 存放所有item的位置和尺寸
+         */
+        SparseArray<Rect> mItemsFrames;
+
+        /**
+         * 当前方向的偏移量
+         */
+        int mScrollDelta;
+
+        int mInitOffset;
+
+
+        public State() {
+            mItemsFrames = new SparseArray<Rect>();
+            mScrollDelta = 0;
+            mInitOffset = 0;
+        }
     }
 
 
@@ -167,25 +269,36 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
         return mOrientation == VERTICAL;
     }
 
+    /**
+     * @param dx       dx>0，手指←移动，scrollX增加，视图视觉左移动（需要取反），右边被遮挡部分出现 ；dx<0，手指→移动，内容右滚动，scrollX减少
+     * @param recycler
+     * @param state
+     * @return
+     */
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (getChildCount() == 0) {
-            return 0;
-        }
-        final View leftView = getChildAt(0);
-        final View rightView = getChildAt(getChildCount() - 1);
-        //Optimize the case where the entire data set is too small to scroll
-        int viewSpan = getDecoratedBottom(rightView) - getDecoratedTop(leftView);
-        if (viewSpan <= getHorizontalSpace()) {
-            //We cannot scroll in either direction
+        if (getChildCount() == 0 || dx == 0) {
             return 0;
         }
         int delta = -dx;
-        //整体偏移，便宜后还需要根据当前的情况决定移动视图后，ItemView的添加/移除
+        int parentCenter = (getOrientationHelper().getEndAfterPadding() - getOrientationHelper().getStartAfterPadding()) / 2 + getOrientationHelper().getStartAfterPadding();
+        View child;
+        if (dx > 0) { //手势左滑
+            if (((LayoutParams) getChildAt(getChildCount() - 1).getLayoutParams()).mPosition == getItemCount() - 1) {
+                child = getChildAt(getChildCount() - 1);
+                delta = -Math.max(0, Math.min(dx, (child.getRight() - child.getLeft()) / 2 + child.getLeft() - parentCenter));
+            }
+        } else {
+            if (mFirstVisiblePosition == 0) {
+                child = getChildAt(0);
+                delta = -Math.min(0, Math.max(dx, ((child.getRight() - child.getLeft()) / 2 + child.getLeft()) - parentCenter));
+            }
+        }
+        getState().mScrollDelta = -delta;
+        fillCover(recycler, state, -delta);
+        //{@link View#offsetChildrenHorizontal} ,通过修改 {@link View#mLeft}变量来实现偏移的，所以dx>0，手指左滑，mLeft变量应该减少才能实现相同的效果，所以需要取反
         offsetChildrenHorizontal(delta);
-
-
-        return super.scrollHorizontallyBy(dx, recycler, state);
+        return -delta;
     }
 
     @Override
@@ -218,6 +331,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
     }
 
     public static class LayoutParams extends RecyclerView.LayoutParams {
+        public int mPosition;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);

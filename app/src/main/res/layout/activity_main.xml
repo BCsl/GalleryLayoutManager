@@ -11,19 +11,46 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="github.hellocsl.gallerylayoutmanager.MainActivity">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_recycle1"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_recycle1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        >
+
+        </android.support.v7.widget.RecyclerView>
+        <TextView
+            android:id="@+id/main_tv_recycle_info_1"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Hello World"
+            android:textColor="@android:color/black"/>
+
+    </FrameLayout>
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1">
 
-    </android.support.v7.widget.RecyclerView>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_recycle2"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_recycle2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        >
 
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/main_tv_recycle_info_2"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Hello World"
+            android:textColor="@android:color/black"/>
+    </FrameLayout>
 </LinearLayout>

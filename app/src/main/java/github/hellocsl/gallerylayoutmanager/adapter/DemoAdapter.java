@@ -1,6 +1,7 @@
 package github.hellocsl.gallerylayoutmanager.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import github.hellocsl.gallerylayoutmanager.BuildConfig;
 import github.hellocsl.gallerylayoutmanager.R;
 
 
@@ -15,7 +17,7 @@ import github.hellocsl.gallerylayoutmanager.R;
  * Created by chensuilun on 2016/11/15.
  */
 public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements View.OnClickListener {
-
+    private static final String TAG = "DemoAdapter";
     private List<String> items;
     private OnItemClickListener mOnItemClickListener;
 
@@ -30,6 +32,9 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onCreateViewHolder: ");
+        }
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_demo, parent, false);
         v.setOnClickListener(this);
         return new ViewHolder(v);
@@ -37,8 +42,11 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "onBindViewHolder: position:" + position);
+        }
         String item = items.get(position);
-        holder.text.setText(item);
+        holder.text.setText("HelloWork：" + item);
         holder.itemView.setTag(position);
     }
 

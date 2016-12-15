@@ -2,7 +2,11 @@
 
 Demonstrate how to custom `RecycleView#LayoutManager`
 
-## LICENSE
+## Iterative
+
+### v1.0
+
+## License
 
 ```
 Copyright 2016 HelloCsl
