@@ -162,7 +162,6 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
                 }
                 layoutDecorated(scrap, scrapRect.left, scrapRect.top, scrapRect.right, scrapRect.bottom);
                 startOffset = scrapRect.bottom;
-                ((LayoutParams) scrap.getLayoutParams()).mPosition = i;
                 mLastVisiblePos = i;
                 getState().mItemsFrames.put(i, scrapRect);
                 if (BuildConfig.DEBUG) {
@@ -187,7 +186,6 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
                 leftOffset = (int) (getPaddingLeft() + (width - scrapWidth) / 2.0f);
                 layoutDecorated(scrap, leftOffset, startOffset - scrapHeight, leftOffset + scrapWidth, startOffset);
                 startOffset -= scrapHeight;
-                ((LayoutParams) scrap.getLayoutParams()).mPosition = i;
                 mFirstVisiblePosition = i;
             }
         }
@@ -269,7 +267,6 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
                 }
                 layoutDecorated(scrap, scrapRect.left, scrapRect.top, scrapRect.right, scrapRect.bottom);
                 startOffset = scrapRect.right;
-                ((LayoutParams) scrap.getLayoutParams()).mPosition = i;
                 mLastVisiblePos = i;
                 getState().mItemsFrames.put(i, scrapRect);
                 if (BuildConfig.DEBUG) {
@@ -301,7 +298,6 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
                 topOffset = (int) (getPaddingTop() + (height - scrapHeight) / 2.0f);
                 layoutDecorated(scrap, startOffset - scrapWidth, topOffset, startOffset, topOffset + scrapHeight);
                 startOffset -= scrapWidth;
-                ((LayoutParams) scrap.getLayoutParams()).mPosition = i;
                 mFirstVisiblePosition = i;
             }
         }
@@ -366,7 +362,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
         int parentCenter = (getOrientationHelper().getEndAfterPadding() - getOrientationHelper().getStartAfterPadding()) / 2 + getOrientationHelper().getStartAfterPadding();
         View child;
         if (dx > 0) { //手势左滑
-            if (((LayoutParams) getChildAt(getChildCount() - 1).getLayoutParams()).mPosition == getItemCount() - 1) {
+            if (getPosition(getChildAt(getChildCount() - 1)) == getItemCount() - 1) {
                 child = getChildAt(getChildCount() - 1);
                 delta = -Math.max(0, Math.min(dx, (child.getRight() - child.getLeft()) / 2 + child.getLeft() - parentCenter));
             }
@@ -392,7 +388,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
         int parentCenter = (getOrientationHelper().getEndAfterPadding() - getOrientationHelper().getStartAfterPadding()) / 2 + getOrientationHelper().getStartAfterPadding();
         View child;
         if (dy > 0) { //手势左滑
-            if (((LayoutParams) getChildAt(getChildCount() - 1).getLayoutParams()).mPosition == getItemCount() - 1) {
+            if (getPosition(getChildAt(getChildCount() - 1)) == getItemCount() - 1) {
                 child = getChildAt(getChildCount() - 1);
                 delta = -Math.max(0, Math.min(dy, (child.getBottom() - child.getTop()) / 2 + child.getTop() - parentCenter));
             }
@@ -423,7 +419,6 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
     }
 
     public static class LayoutParams extends RecyclerView.LayoutParams {
-        public int mPosition;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
