@@ -2,7 +2,6 @@ package github.hellocsl.gallerylayoutmanager;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
         });
         mMainRecycle1.setAdapter(demoAdapter1);
 
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
-        layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+//        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
+//        layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+        GalleryLayoutManager layoutManager2 = new GalleryLayoutManager(this, GalleryLayoutManager.VERTICAL);
         mMainRecycle2.setLayoutManager(layoutManager2);
         DemoAdapter demoAdapter2 = new DemoAdapter(title) {
             @Override

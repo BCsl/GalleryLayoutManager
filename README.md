@@ -6,6 +6,8 @@ Demonstrate how to custom `RecycleView#LayoutManager`
 
 ### v1.0
 
+A LinearLayoutManager like LayoutManager, Horizontal and Vertical support.
+
 ## License
 
 ```
