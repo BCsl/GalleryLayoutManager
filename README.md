@@ -4,9 +4,9 @@ Demonstrate how to custom `RecycleView#LayoutManager`
 
 ## Iterative
 
-### v1.0
+### [v1.0](https://github.com/BCsl/GalleryLayoutManager/releases/tag/v1.0)
 
-A LinearLayoutManager like LayoutManager, Horizontal and Vertical support.
+A LinearLayoutManager like LayoutManager, Horizontally and Vertically scroll are supported.
 
 ## License
 
