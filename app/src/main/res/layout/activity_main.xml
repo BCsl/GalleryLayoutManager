@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Hello World"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/secondary_text_dark_nodisable"/>
 
     </FrameLayout>
     <FrameLayout
@@ -51,6 +51,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Hello World"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/secondary_text_dark_nodisable"/>
     </FrameLayout>
 </LinearLayout>

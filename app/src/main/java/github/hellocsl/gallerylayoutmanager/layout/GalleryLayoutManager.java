@@ -2,6 +2,7 @@ package github.hellocsl.gallerylayoutmanager.layout;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -12,22 +13,32 @@ import android.view.ViewGroup;
 
 import github.hellocsl.gallerylayoutmanager.BuildConfig;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+
 /**
+ * A custom LayoutManager to build a {@link android.widget.Gallery} like {@link RecyclerView} and
+ * support both {@link GalleryLayoutManager#HORIZONTAL} and {@link GalleryLayoutManager#VERTICAL}
  * Created by chensuilun on 2016/11/18.
  */
-
 public class GalleryLayoutManager extends RecyclerView.LayoutManager {
     private static final String TAG = "GalleryLayoutManager";
     private final Context mContext;
     private int mFirstVisiblePosition = -1;
     private int mLastVisiblePos = -1;
 
-
     public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
 
     public static final int VERTICAL = OrientationHelper.VERTICAL;
-
+    /**
+     * Scroll state
+     */
     private State mState;
+
+    private LinearSnapHelper mSnapHelper = new LinearSnapHelper();
+
+    private InnerScrollListener mInnerScrollListener = new InnerScrollListener();
+
+    private boolean mCallbackInFling = false;
 
     /**
      * Current orientation. Either {@link #HORIZONTAL} or {@link #VERTICAL}
@@ -44,9 +55,15 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
-        return new GalleryLayoutManager.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (mOrientation == VERTICAL) {
+            return new GalleryLayoutManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        } else {
+            return new GalleryLayoutManager.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+        }
     }
 
     @Override
@@ -95,6 +112,14 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
             fillWithVertical(recycler, state, scrollDelta);
         }
 
+
+        if (mItemTransformer != null) {
+            View child;
+            for (int i = 0; i < getChildCount(); i++) {
+                child = getChildAt(i);
+                mItemTransformer.transformItem(child, getPosition(child), mOrientation, getOrientationHelper(), scrollDelta);
+            }
+        }
     }
 
     /**
@@ -155,7 +180,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
                 leftOffset = (int) (getPaddingLeft() + (width - scrapWidth) / 2.0f);
                 if (startOffset == -1 && startPosition == 0) {
                     //第0个View，居中处理
-                    int top = (int) (getPaddingLeft() + (getHorizontalSpace() - scrapWidth) / 2.f);
+                    int top = (int) (getPaddingTop() + (getVerticalSpace() - scrapHeight) / 2.f);
                     scrapRect.set(leftOffset, top, leftOffset + scrapWidth, top + scrapHeight);
                 } else {
                     scrapRect.set(leftOffset, startOffset, leftOffset + scrapWidth, startOffset + scrapHeight);
@@ -164,9 +189,6 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
                 startOffset = scrapRect.bottom;
                 mLastVisiblePos = i;
                 getState().mItemsFrames.put(i, scrapRect);
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "fillWithHorizontal,layout:mLastVisiblePos: " + mLastVisiblePos);
-                }
             }
         } else {
             //dy<0
@@ -418,6 +440,9 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
+    /**
+     * @author chensuilun 
+     */
     public static class LayoutParams extends RecyclerView.LayoutParams {
 
         public LayoutParams(Context c, AttributeSet attrs) {
@@ -438,6 +463,103 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager {
 
         public LayoutParams(RecyclerView.LayoutParams source) {
             super(source);
+        }
+    }
+
+
+    private ItemTransformer mItemTransformer;
+
+
+    public void setItemTransformer(ItemTransformer itemTransformer) {
+        mItemTransformer = itemTransformer;
+    }
+
+    public interface ItemTransformer {
+        /**
+         * Apply a property transformation to the given item.
+         */
+        void transformItem(View item, float position, int orientation, OrientationHelper orientationHelper, int pendingOffset);
+    }
+
+    /**
+     * @author chensuilun
+     */
+    public interface OnItemSelectedListener {
+        /**
+         * @param item         the current selected view
+         * @param position     the current selected view's position
+         * @param recyclerView
+         */
+        void onItemSelected(View item, int position, RecyclerView recyclerView);
+    }
+
+    private OnItemSelectedListener mOnItemSelectedListener;
+
+    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+        mOnItemSelectedListener = onItemSelectedListener;
+    }
+
+    public void attach(RecyclerView recyclerView) {
+        if (recyclerView == null) {
+            throw new IllegalArgumentException("The attach RecycleView must not null!!");
+        }
+        recyclerView.setLayoutManager(this);
+        mSnapHelper.attachToRecyclerView(recyclerView);
+        recyclerView.addOnScrollListener(mInnerScrollListener);
+    }
+
+
+    public void setCallbackInFling(boolean callbackInFling) {
+        mCallbackInFling = callbackInFling;
+    }
+
+    /**
+     * @author chensuilun
+     */
+    private class InnerScrollListener extends RecyclerView.OnScrollListener {
+        int mPreSelectedPosition = -1;
+        int mState;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            View snap = mSnapHelper.findSnapView(recyclerView.getLayoutManager());
+            if (snap != null) {
+                int selectedPosition = recyclerView.getLayoutManager().getPosition(snap);
+                if (selectedPosition != mPreSelectedPosition) {
+                    if (!mCallbackInFling && mState != SCROLL_STATE_IDLE) {
+                        return;
+                    }
+                    mPreSelectedPosition = selectedPosition;
+                    if (mOnItemSelectedListener != null) {
+                        mOnItemSelectedListener.onItemSelected(snap, mPreSelectedPosition, recyclerView);
+                    }
+                }
+            }
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "onScrolled: dx:" + dx + ",dy:" + dy);
+            }
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            mState = newState;
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "onScrollStateChanged: " + newState);
+            }
+            if (mState == SCROLL_STATE_IDLE) {
+                View snap = mSnapHelper.findSnapView(recyclerView.getLayoutManager());
+                if (snap != null) {
+                    int selectedPosition = recyclerView.getLayoutManager().getPosition(snap);
+                    if (selectedPosition != mPreSelectedPosition) {
+                        mPreSelectedPosition = selectedPosition;
+                        if (mOnItemSelectedListener != null) {
+                            mOnItemSelectedListener.onItemSelected(snap, mPreSelectedPosition, recyclerView);
+                        }
+                    }
+                }
+            }
         }
     }
 }

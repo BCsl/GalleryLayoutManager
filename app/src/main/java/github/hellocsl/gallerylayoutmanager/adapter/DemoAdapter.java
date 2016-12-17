@@ -17,12 +17,21 @@ import github.hellocsl.gallerylayoutmanager.R;
  * Created by chensuilun on 2016/11/15.
  */
 public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements View.OnClickListener {
+    public static final int VIEW_TYPE_IMAGE = 0;
+    public static final int VIEW_TYPE_TEXT = 1;
     private static final String TAG = "DemoAdapter";
     private List<String> items;
+    private int mType = VIEW_TYPE_IMAGE;
     private OnItemClickListener mOnItemClickListener;
 
+
     public DemoAdapter(List<String> items) {
+        this(items, VIEW_TYPE_IMAGE);
+    }
+
+    public DemoAdapter(List<String> items, int type) {
         this.items = items;
+        mType = type;
     }
 
     public DemoAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -31,11 +40,21 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mType;
+    }
+
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (BuildConfig.DEBUG) {
-            Log.e(TAG, "onCreateViewHolder: ");
+            Log.e(TAG, "onCreateViewHolder: type:" + viewType);
         }
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_demo, parent, false);
+        View v;
+        if (viewType == VIEW_TYPE_IMAGE) {
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_demo, parent, false);
+        } else {
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_tv, parent, false);
+        }
         v.setOnClickListener(this);
         return new ViewHolder(v);
     }
@@ -46,7 +65,11 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
             Log.d(TAG, "onBindViewHolder: position:" + position);
         }
         String item = items.get(position);
-        holder.text.setText("HelloWork：" + item);
+        if (mType == VIEW_TYPE_TEXT) {
+            holder.text.setText(item);
+        } else {
+            holder.text.setText("HelloWorlk：" + item);
+        }
         holder.itemView.setTag(position);
     }
 

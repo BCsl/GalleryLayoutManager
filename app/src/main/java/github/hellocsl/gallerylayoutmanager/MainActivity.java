@@ -16,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import github.hellocsl.gallerylayoutmanager.adapter.DemoAdapter;
 import github.hellocsl.gallerylayoutmanager.layout.GalleryLayoutManager;
+import github.hellocsl.gallerylayoutmanager.layout.impl.CurveTransformer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,14 +41,15 @@ public class MainActivity extends AppCompatActivity {
         List<String> title = new ArrayList<String>();
         int size = 50;
         for (int i = 0; i < size; i++) {
-            title.add("Title:" + i);
+            title.add("Hello" + i);
         }
         GalleryLayoutManager layoutManager1 = new GalleryLayoutManager(this, GalleryLayoutManager.HORIZONTAL);
+        layoutManager1.setItemTransformer(new CurveTransformer());
         mMainRecycle1.setLayoutManager(layoutManager1);
         DemoAdapter demoAdapter1 = new DemoAdapter(title) {
             @Override
             public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                mMainTv1.append("onCreateViewHolder\n");
+                mMainTv1.append("CreateVH:+" + viewType + "\n");
                 return super.onCreateViewHolder(parent, viewType);
             }
         };
@@ -59,22 +61,29 @@ public class MainActivity extends AppCompatActivity {
         });
         mMainRecycle1.setAdapter(demoAdapter1);
 
-        GalleryLayoutManager layoutManager2 = new GalleryLayoutManager(this, GalleryLayoutManager.VERTICAL);
-        mMainRecycle2.setLayoutManager(layoutManager2);
-        DemoAdapter demoAdapter2 = new DemoAdapter(title) {
+        final GalleryLayoutManager layoutManager2 = new GalleryLayoutManager(this, GalleryLayoutManager.VERTICAL);
+        layoutManager2.setItemTransformer(new CurveTransformer());
+        layoutManager2.attach(mMainRecycle2);
+        layoutManager2.setCallbackInFling(false);
+        layoutManager2.setOnItemSelectedListener(new GalleryLayoutManager.OnItemSelectedListener() {
             @Override
-            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                mMainTv2.append("onCreateViewHolder\n");
-                return super.onCreateViewHolder(parent, viewType);
+            public void onItemSelected(View item, int position, RecyclerView recyclerView) {
+                mMainTv2.append("selected:" + position + "\n");
             }
-        };
+        });
+        DemoAdapter demoAdapter2 = new DemoAdapter(title, DemoAdapter.VIEW_TYPE_TEXT);
+        demoAdapter2.setOnItemClickListener(new DemoAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                layoutManager2.scrollToPosition(position);
+            }
+        });
         mMainRecycle2.setAdapter(demoAdapter2);
 
 
-        LinearSnapHelper snapHelper1 = new LinearSnapHelper();
+        final LinearSnapHelper snapHelper1 = new LinearSnapHelper();
         snapHelper1.attachToRecyclerView(mMainRecycle1);
 
-        LinearSnapHelper snapHelper2 = new LinearSnapHelper();
-        snapHelper2.attachToRecyclerView(mMainRecycle2);
+
     }
 }
