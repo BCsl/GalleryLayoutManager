@@ -1,8 +1,10 @@
 package github.hellocsl.gallerylayoutmanager.layout.impl;
 
 import android.support.v7.widget.OrientationHelper;
+import android.util.Log;
 import android.view.View;
 
+import github.hellocsl.gallerylayoutmanager.BuildConfig;
 import github.hellocsl.gallerylayoutmanager.layout.GalleryLayoutManager;
 
 /**
@@ -10,18 +12,21 @@ import github.hellocsl.gallerylayoutmanager.layout.GalleryLayoutManager;
  */
 public class CurveTransformer implements GalleryLayoutManager.ItemTransformer {
 
+    private static final String TAG = "CurveTransformer";
 
     @Override
     public void transformItem(View item, float position, int orientation, OrientationHelper orientationHelper, int pendingOffset) {
         float toCenterFraction = (calculateDistanceCenter(item, orientation, orientationHelper, pendingOffset)) / (orientationHelper.getTotalSpace() / 2.0f);
 
+        item.setScaleX(1 - 0.3f * Math.abs(toCenterFraction));
+        item.setScaleY(1 - 0.3f * Math.abs(toCenterFraction));
         if (orientation == GalleryLayoutManager.VERTICAL) {
-            item.setScaleX(1 - 0.7f * Math.abs(toCenterFraction));
-            item.setAlpha(1 - 0.7f * Math.abs(toCenterFraction));
-            item.setRotationX(-toCenterFraction * 90);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "transformItem: position:" + position + ",pivotY:" + item.getPivotY() + ",item height:" + item.getHeight() + ",rotationX:" + (-toCenterFraction * 90));
+            }
+            item.setAlpha(1 - 0.8f * Math.abs(toCenterFraction));
         } else {
-            item.setScaleY(1 - 0.5f * Math.abs(toCenterFraction));
-            item.setRotationY(toCenterFraction * 45);
+            item.setAlpha(1 - 0.7f * Math.abs(toCenterFraction));
         }
 
     }

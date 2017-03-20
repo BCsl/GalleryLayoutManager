@@ -9,5 +9,5 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     tools:background="@color/colorAccent"
-    android:textColor="@android:color/black"
+    android:textColor="@color/color_item_check"
     tools:text="Hello World!"/>
