@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             title.add("Hello" + i);
         }
         GalleryLayoutManager layoutManager1 = new GalleryLayoutManager(this, GalleryLayoutManager.HORIZONTAL);
-        layoutManager1.attach(mMainRecycle1);
+        layoutManager1.attach(mMainRecycle1, 30);
         layoutManager1.setItemTransformer(new CurveTransformer());
         DemoAdapter demoAdapter1 = new DemoAdapter(title) {
             @Override
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         final GalleryLayoutManager layoutManager2 = new GalleryLayoutManager(this, GalleryLayoutManager.VERTICAL);
 //        layoutManager2.setItemTransformer(new CurveTransformer());
-        layoutManager2.attach(mMainRecycle2);
+        layoutManager2.attach(mMainRecycle2, 20);
         layoutManager2.setCallbackInFling(true);
         layoutManager2.setOnItemSelectedListener(new GalleryLayoutManager.OnItemSelectedListener() {
             @Override
