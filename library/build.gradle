@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+def supportLibraryVersion = '25.3.0'
+def recycleView = "com.android.support:recyclerview-v7:$supportLibraryVersion"
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile recycleView
+}
+
+publish {
+    userOrg = 'bcsl'
+    groupId = 'github.hellocsl'
+    artifactId = 'GalleryLayoutManager'
+    publishVersion = '1.0.1'
+    desc = 'A custom LayoutManager to build a Gallery or a ViewPager like widget with RecycleView in Android and ' +
+            'support both HORIZONTAL and VERTICAL scroll.'
+    website = 'https://github.com/BCsl/GalleryLayoutManager'
+}

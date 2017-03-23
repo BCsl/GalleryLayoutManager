@@ -32,4 +32,5 @@ dependencies {
     compile deps.butterKnife
     annotationProcessor deps.butterKnifeProcessor
 
+    compile project(path: ':library')
 }

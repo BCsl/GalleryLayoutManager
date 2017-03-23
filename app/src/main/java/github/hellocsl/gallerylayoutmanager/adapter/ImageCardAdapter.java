@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -16,33 +16,24 @@ import github.hellocsl.gallerylayoutmanager.R;
 /**
  * Created by chensuilun on 2016/11/15.
  */
-public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements View.OnClickListener {
-    public static final int VIEW_TYPE_IMAGE = 0;
-    public static final int VIEW_TYPE_TEXT = 1;
-    private static final String TAG = "DemoAdapter";
-    private List<String> items;
-    private int mType = VIEW_TYPE_IMAGE;
+public class ImageCardAdapter extends RecyclerView.Adapter<ImageCardAdapter.ViewHolder> implements View.OnClickListener {
+    private static final String TAG = "ImageCardAdapter";
+    private List<CardItem> items;
     private OnItemClickListener mOnItemClickListener;
+    private int mWidth;
+    private int mHeight;
 
-
-    public DemoAdapter(List<String> items) {
-        this(items, VIEW_TYPE_IMAGE);
-    }
-
-    public DemoAdapter(List<String> items, int type) {
+    public ImageCardAdapter(List<CardItem> items, int width, int height) {
         this.items = items;
-        mType = type;
+        mWidth = width;
+        mHeight = height;
     }
 
-    public DemoAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    public ImageCardAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
         return this;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return mType;
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,12 +41,9 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
             Log.e(TAG, "onCreateViewHolder: type:" + viewType);
         }
         View v;
-        if (viewType == VIEW_TYPE_IMAGE) {
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_demo, parent, false);
-        } else {
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_tv, parent, false);
-        }
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycel_image, parent, false);
         v.setOnClickListener(this);
+        v.setLayoutParams(new RecyclerView.LayoutParams(mWidth, mHeight));
         return new ViewHolder(v);
     }
 
@@ -64,12 +52,8 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onBindViewHolder: position:" + position);
         }
-        String item = items.get(position);
-        if (mType == VIEW_TYPE_TEXT) {
-            holder.text.setText(item);
-        } else {
-            holder.text.setText("HelloWorld：" + item);
-        }
+        CardItem item = items.get(position);
+        holder.image.setImageResource(item.mResId);
         holder.itemView.setTag(position);
     }
 
@@ -89,11 +73,11 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
      * @author chensuilun
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView text;
+        public ImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            text = (TextView) itemView.findViewById(R.id.item_tv_title);
+            image = (ImageView) itemView.findViewById(R.id.imageView);
         }
     }
 
@@ -104,5 +88,18 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
 
         void onItemClick(View view, int position);
 
+    }
+
+    /**
+     *
+     */
+    public static class CardItem {
+        public int mResId;
+        public String mName;
+
+        public CardItem(int resId, String name) {
+            mResId = resId;
+            mName = name;
+        }
     }
 }

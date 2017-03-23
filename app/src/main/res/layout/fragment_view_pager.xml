@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/colorPrimaryDark"
+>
+    <ImageView android:id="@+id/pager_bg"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:scaleType="centerCrop"/>
+
+    <github.hellocsl.gallerylayoutmanager.FlingRecycleView
+        android:id="@+id/pager_recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </github.hellocsl.gallerylayoutmanager.FlingRecycleView>
+
+</FrameLayout>
