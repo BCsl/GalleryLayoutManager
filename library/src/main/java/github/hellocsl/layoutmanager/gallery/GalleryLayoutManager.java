@@ -183,7 +183,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         int topOffset;
         //layout the init position view
         View scrap = recycler.getViewForPosition(mInitialSelectedPosition);
-        addView(scrap);
+        addView(scrap, 0);
         measureChildWithMargins(scrap, 0, 0);
         scrapWidth = getDecoratedMeasuredWidth(scrap);
         scrapHeight = getDecoratedMeasuredHeight(scrap);
@@ -222,7 +222,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         int leftOffset;
         //layout the init position view
         View scrap = recycler.getViewForPosition(mInitialSelectedPosition);
-        addView(scrap);
+        addView(scrap, 0);
         measureChildWithMargins(scrap, 0, 0);
         scrapWidth = getDecoratedMeasuredWidth(scrap);
         scrapHeight = getDecoratedMeasuredHeight(scrap);
@@ -260,7 +260,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         int height = getVerticalSpace();
         for (int i = startPosition; i > 0 && startOffset > leftEdge; i--) {
             scrap = recycler.getViewForPosition(i);
-            addView(scrap);
+            addView(scrap, 0);
             measureChildWithMargins(scrap, 0, 0);
             scrapWidth = getDecoratedMeasuredWidth(scrap);
             scrapHeight = getDecoratedMeasuredHeight(scrap);
@@ -326,7 +326,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         int width = getHorizontalSpace();
         for (int i = startPosition; i > 0 && startOffset > topEdge; i--) {
             scrap = recycler.getViewForPosition(i);
-            addView(scrap);
+            addView(scrap, 0);
             measureChildWithMargins(scrap, 0, 0);
             scrapWidth = getDecoratedMeasuredWidth(scrap);
             scrapHeight = getDecoratedMeasuredHeight(scrap);
