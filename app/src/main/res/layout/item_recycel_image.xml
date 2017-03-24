@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:cardCornerRadius="6dp"
     app:cardElevation="2dp"
-    app:cardUseCompatPadding="true">
+    app:cardUseCompatPadding="false">
 
     <ImageView
         android:id="@+id/imageView"

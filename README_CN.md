@@ -6,6 +6,10 @@
 
 ## 效果
 
+![ViewPager](./screenshots/ViewPager.gif)
+
+![Demo](./screenshots/demo.gif)
+
 ## 使用方法
 
 ### 1、添加依赖
@@ -13,13 +17,13 @@
 #### Gradle
 
 ```java
-compile 'github.hellocsl:GalleryLayoutManager:1.0.2'
+compile 'github.hellocsl:GalleryLayoutManager:1.0.3'
 ```
 
 > 注意：如果你的项目已经引用了 `RecyclerView` ，那么应该这样引用，而且你的 `RecyclerView` 的引用版本必须大于 24.2.0
 
 ```java
-compile ('github.hellocsl:GalleryLayoutManager:1.0.1'){
+compile ('github.hellocsl:GalleryLayoutManager:1.0.3'){
     exclude group: 'com.android.support', module:'recyclerview-v7'
 }
 ```

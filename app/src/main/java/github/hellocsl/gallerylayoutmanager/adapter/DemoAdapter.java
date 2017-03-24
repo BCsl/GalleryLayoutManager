@@ -20,7 +20,7 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
     public static final int VIEW_TYPE_IMAGE = 0;
     public static final int VIEW_TYPE_TEXT = 1;
     private static final String TAG = "DemoAdapter";
-    private List<String> items;
+    private List<String> mItems;
     private int mType = VIEW_TYPE_IMAGE;
     private OnItemClickListener mOnItemClickListener;
 
@@ -30,8 +30,17 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
     }
 
     public DemoAdapter(List<String> items, int type) {
-        this.items = items;
+        this.mItems = items;
         mType = type;
+    }
+
+    public void addData() {
+        if (mItems != null) {
+            for (int i = 0; i < 10; i++) {
+                mItems.add("Extra:" + i);
+            }
+            notifyDataSetChanged();
+        }
     }
 
     public DemoAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -64,7 +73,7 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onBindViewHolder: position:" + position);
         }
-        String item = items.get(position);
+        String item = mItems.get(position);
         if (mType == VIEW_TYPE_TEXT) {
             holder.text.setText(item);
         } else {
@@ -75,7 +84,7 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return mItems.size();
     }
 
     @Override

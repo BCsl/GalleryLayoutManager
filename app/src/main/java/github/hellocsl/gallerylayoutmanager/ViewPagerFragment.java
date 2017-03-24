@@ -45,7 +45,7 @@ public class ViewPagerFragment extends BaseRestoreFragment {
      * Use FragmentManager to find this Fragment's instance by tag
      */
     public static ViewPagerFragment findFragment(FragmentManager manager) {
-        return (ViewPagerFragment)manager.findFragmentByTag(ViewPagerFragment.class.getSimpleName());
+        return (ViewPagerFragment) manager.findFragmentByTag(ViewPagerFragment.class.getSimpleName());
     }
 
     List<ImageCardAdapter.CardItem> mCardItems;
@@ -79,6 +79,7 @@ public class ViewPagerFragment extends BaseRestoreFragment {
         mPagerRecycleView.setFlingAble(false);
         GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
         layoutManager.attach(mPagerRecycleView, 30);
+//        layoutManager.attach(mPagerRecycleView);
         layoutManager.setOnItemSelectedListener(new GalleryLayoutManager.OnItemSelectedListener() {
             @Override
             public void onItemSelected(RecyclerView recyclerView, View item, int position) {
@@ -88,15 +89,15 @@ public class ViewPagerFragment extends BaseRestoreFragment {
         });
         layoutManager.setItemTransformer(new CurveTransformer());
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        ImageCardAdapter demoAdapter1 = new ImageCardAdapter(mCardItems, (int) (displayMetrics.widthPixels * 0.7f), (int) (displayMetrics.heightPixels * 0.8f));
-        demoAdapter1.setOnItemClickListener(new ImageCardAdapter.OnItemClickListener() {
+        ImageCardAdapter imageAdapter = new ImageCardAdapter(mCardItems, (int) (displayMetrics.widthPixels * 0.7f), (int) (displayMetrics.heightPixels * 0.8f));
+        imageAdapter.setOnItemClickListener(new ImageCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Toast.makeText(getContext(), "click" + mCardItems.get(position).mName, Toast.LENGTH_SHORT).show();
                 mPagerRecycleView.smoothScrollToPosition(position);
             }
         });
-        mPagerRecycleView.setAdapter(demoAdapter1);
+        mPagerRecycleView.setAdapter(imageAdapter);
     }
 
 

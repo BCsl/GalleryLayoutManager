@@ -167,7 +167,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
     }
 
     /**
-     * Layout the item view witch position special by {@link GalleryLayoutManager#mInitialSelectedPosition} first and then layout the other
+     * Layout the item view witch position specified by {@link GalleryLayoutManager#mInitialSelectedPosition} first and then layout the other
      *
      * @param recycler
      * @param state

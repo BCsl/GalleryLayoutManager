@@ -1,35 +1,35 @@
 package github.hellocsl.gallerylayoutmanager.layout.impl;
 
-import android.util.Log;
 import android.view.View;
 
-import github.hellocsl.gallerylayoutmanager.BuildConfig;
 import github.hellocsl.layoutmanager.gallery.GalleryLayoutManager;
 
 /**
  * Created by chensuilun on 2016/12/16.
  */
 public class CurveTransformer implements GalleryLayoutManager.ItemTransformer {
-
+    public static final int ROTATE_ANGEL = 7;
     private static final String TAG = "CurveTransformer";
 
 
     @Override
     public void transformItem(GalleryLayoutManager layoutManager, View item, float fraction) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "transformItem() called with:  fraction = [" + fraction + "]");
-        }
         if (layoutManager.getOrientation() == GalleryLayoutManager.VERTICAL) {
             return;
         }
-        item.setPivotX(item.getWidth() / 2.f);
-        item.setPivotY(item.getHeight());
+        int width = item.getWidth();
+        int height = item.getHeight();
+        item.setPivotX(width / 2.f);
+        item.setPivotY(height);
         float scale = 1 - 0.1f * Math.abs(fraction);
         item.setScaleX(scale);
         item.setScaleY(scale);
-        item.setRotation(10 * fraction);
-        item.setTranslationY(30 * Math.abs(fraction));
-        item.setTranslationX(50 * -fraction);
+        item.setRotation(ROTATE_ANGEL * fraction);
+        item.setTranslationY((float) (Math.sin(2 * Math.PI * ROTATE_ANGEL * Math.abs(fraction) / 360.f) * width / 2.0f));
+        item.setTranslationX((float) ((1 - scale) * width / 2.0f / Math.cos(2 * Math.PI * ROTATE_ANGEL * fraction / 360.f)));
+        if (fraction > 0) {
+            item.setTranslationX(-item.getTranslationX());
+        }
         item.setAlpha(1 - 0.2f * Math.abs(fraction));
     }
 }

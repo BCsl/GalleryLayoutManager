@@ -2,7 +2,6 @@ package github.hellocsl.gallerylayoutmanager;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
@@ -51,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.activity_main, fragment)
                 .hide(mMainFragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commitAllowingStateLoss();
     }
