@@ -34,7 +34,7 @@ publish {
     userOrg = 'bcsl'
     groupId = 'github.hellocsl'
     artifactId = 'GalleryLayoutManager'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.3'
     desc = 'A custom LayoutManager to build a Gallery or a ViewPager like widget with RecycleView in Android and ' +
             'support both HORIZONTAL and VERTICAL scroll.'
     website = 'https://github.com/BCsl/GalleryLayoutManager'

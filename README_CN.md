@@ -1,14 +1,14 @@
 # GalleryLayoutManager
 
-[中文](./README_CN.md)
+[English](./README.md)
 
-A custom LayoutManager to build a Gallery or a ViewPager like RecyclerView and support both HORIZONTAL and VERTICAL scroll.And View Recycle Machine is also supported.
+使用自定义 `LayoutManager` 实现 Android 中 `Gallery` 或者 `ViewPager` 控件的效果，支持垂直和水平两个方向，支持 `RecycleView` 的试图回收机制
 
-## Screenshots
+## 效果
 
-## Usage
+## 使用方法
 
-### 1、Build
+### 1、添加依赖
 
 #### Gradle
 
@@ -16,7 +16,7 @@ A custom LayoutManager to build a Gallery or a ViewPager like RecyclerView and s
 compile 'github.hellocsl:GalleryLayoutManager:1.0.2'
 ```
 
-> Be care ：if you have used `RecyclerView` in your project , maybe your should use this library as below and your recyclerview-v7 requires API level 24.2.0 or higher
+> 注意：如果你的项目已经引用了 `RecyclerView` ，那么应该这样引用，而且你的 `RecyclerView` 的引用版本必须大于 24.2.0
 
 ```java
 compile ('github.hellocsl:GalleryLayoutManager:1.0.1'){
@@ -24,26 +24,27 @@ compile ('github.hellocsl:GalleryLayoutManager:1.0.1'){
 }
 ```
 
-### 2、In your code
+### 2、代码
 
-#### Basis Usage
+#### 基本使用
 
-Use `GalleryLayoutManager#attach(RecycleView recycleView)` to setup `GalleryLayoutManager` for your `RecycleView` instead of `RecycleView#setLayoutManager(LayoutManager manager)`
+不要使用 `RecycleView#setLayoutManager` 方法，而是使用 `GalleryLayoutManager#attach` 方法来绑定`RecycleView` 和 `GalleryLayoutManager`
 
 ```java
 GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
-//layoutManager.attach(mPagerRecycleView);  default selected position is 0
+//layoutManager.attach(mPagerRecycleView);  默认选中位置为0
+//不要使用 RecycleView#setLayoutManager 方法，而是使用 GalleryLayoutManager#attach 方法
 layoutManager.attach(mPagerRecycleView, 30);
 
 //...
-//setup adapter for your RecycleView
+//为 RecycleView 绑定 adapter
 mPagerRecycleView.setAdapter(imageAdapter);
 ```
 
-#### Listen to selection change
+#### 监听 Item 选中
 
 ```java
-layoutManager2.setCallbackInFling(true);//should receive callback when flinging, default is false
+//添加视图选中监听
 layoutManager.setOnItemSelectedListener(new GalleryLayoutManager.OnItemSelectedListener() {
     @Override
     public void onItemSelected(RecyclerView recyclerView, View item, int position) {
@@ -52,9 +53,9 @@ layoutManager.setOnItemSelectedListener(new GalleryLayoutManager.OnItemSelectedL
 });
 ```
 
-#### Apply ItemTransformer just like ViewPager
+#### 和 ViewPager 一样添加Item转换器
 
-Implements your `ItemTransformer`
+继承实现 `GalleryLayoutManager.ItemTransformer`
 
 ```java
 public class ScaleTransformer implements GalleryLayoutManager.ItemTransformer {
@@ -71,7 +72,7 @@ public class ScaleTransformer implements GalleryLayoutManager.ItemTransformer {
 ```
 
 ```java
-// Apply ItemTransformer just like ViewPager
+//添加 Item 转换器，和 ViewPager 一样使用
 layoutManager.setItemTransformer(new ScaleTransformer());
 ```
 
