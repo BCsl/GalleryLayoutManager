@@ -23,7 +23,7 @@ compile 'github.hellocsl:GalleryLayoutManager:1.0.4'
 > 注意：如果你的项目已经引用了 `RecyclerView` ，那么应该这样引用，而且你的 `RecyclerView` 的引用版本必须大于 24.2.0
 
 ```java
-compile ('github.hellocsl:GalleryLayoutManager:1.0.3'){
+compile ('github.hellocsl:GalleryLayoutManager:1.0.4'){
     exclude group: 'com.android.support', module:'recyclerview-v7'
 }
 ```
