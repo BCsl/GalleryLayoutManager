@@ -115,7 +115,12 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         if (state.isPreLayout()) {
             return;
         }
-
+        if (state.getItemCount() != 0 && !state.didStructureChange()) {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "onLayoutChildren: ignore extra layout step");
+            }
+            return;
+        }
         if (getChildCount() == 0 || state.didStructureChange()) {
             reset();
         }

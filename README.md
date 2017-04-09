@@ -23,7 +23,7 @@ compile 'github.hellocsl:GalleryLayoutManager:1.0.3'
 > Be care ：if you have used `RecyclerView` in your project , maybe your should use this library as below and your recyclerview-v7 requires API level 24.2.0 or higher
 
 ```java
-compile ('github.hellocsl:GalleryLayoutManager:1.0.3'){
+compile ('github.hellocsl:GalleryLayoutManager:1.0.4'){
     exclude group: 'com.android.support', module:'recyclerview-v7'
 }
 ```

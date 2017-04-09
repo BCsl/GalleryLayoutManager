@@ -31,10 +31,10 @@ dependencies {
 
     compile deps.butterKnife
     annotationProcessor deps.butterKnifeProcessor
-    compile ('github.hellocsl:GalleryLayoutManager:1.0.3'){
-        exclude group: 'com.android.support', module:'recyclerview-v7'
-    }
+//    compile ('github.hellocsl:GalleryLayoutManager:1.0.3'){
+//        exclude group: 'com.android.support', module:'recyclerview-v7'
+//    }
 
-//    compile project(path: ':library')
+    compile project(path: ':library')
 
 }
