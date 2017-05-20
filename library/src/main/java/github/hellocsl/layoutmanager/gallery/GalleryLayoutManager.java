@@ -263,7 +263,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         int scrapWidth, scrapHeight;
         Rect scrapRect = new Rect();
         int height = getVerticalSpace();
-        for (int i = startPosition; i > 0 && startOffset > leftEdge; i--) {
+        for (int i = startPosition; i >= 0 && startOffset > leftEdge; i--) {
             scrap = recycler.getViewForPosition(i);
             addView(scrap, 0);
             measureChildWithMargins(scrap, 0, 0);
@@ -329,7 +329,7 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         int scrapWidth, scrapHeight;
         Rect scrapRect = new Rect();
         int width = getHorizontalSpace();
-        for (int i = startPosition; i > 0 && startOffset > topEdge; i--) {
+        for (int i = startPosition; i >= 0 && startOffset > topEdge; i--) {
             scrap = recycler.getViewForPosition(i);
             addView(scrap, 0);
             measureChildWithMargins(scrap, 0, 0);
