@@ -17,7 +17,7 @@
 #### Gradle
 
 ```java
-compile 'github.hellocsl:GalleryLayoutManager:1.0.4'
+compile 'github.hellocsl:GalleryLayoutManager:{lastest-version}'
 ```
 
 > 注意：如果你的项目已经引用了 `RecyclerView` ，那么应该这样引用，而且你的 `RecyclerView` 的引用版本必须大于 24.2.0

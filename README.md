@@ -17,7 +17,7 @@ A custom LayoutManager to build a Gallery or a ViewPager like RecyclerView that 
 #### Gradle
 
 ```java
-compile 'github.hellocsl:GalleryLayoutManager:1.0.4'
+compile 'github.hellocsl:GalleryLayoutManager:{lastest-version}'
 ```
 
 > Be care ：if you have used `RecyclerView` in your project , maybe your should use this library as below and your recyclerview-v7 requires API level 24.2.0 or higher
