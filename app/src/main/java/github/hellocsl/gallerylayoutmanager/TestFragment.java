@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,10 +127,15 @@ public class TestFragment extends BaseRestoreFragment {
             mMainRecycle2.smoothScrollToPosition(selectPosition);
         } else {
             if (mMainRecycle1.getAdapter() instanceof DemoAdapter) {
-                ((DemoAdapter) mMainRecycle1.getAdapter()).addData();
+                int result = ((DemoAdapter) mMainRecycle1.getAdapter()).dataChange();
+                if (result == 1) {
+                    Toast.makeText(getContext(), "add data", Toast.LENGTH_SHORT).show();
+                } else if (result == -1) {
+                    Toast.makeText(getContext(), "remove data", Toast.LENGTH_SHORT).show();
+                }
             }
             if (mMainRecycle2.getAdapter() instanceof DemoAdapter) {
-                ((DemoAdapter) mMainRecycle2.getAdapter()).addData();
+                ((DemoAdapter) mMainRecycle2.getAdapter()).dataChange();
             }
         }
     }

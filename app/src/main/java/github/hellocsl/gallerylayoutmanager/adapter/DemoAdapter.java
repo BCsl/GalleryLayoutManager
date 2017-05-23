@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Random;
 
 import github.hellocsl.gallerylayoutmanager.BuildConfig;
 import github.hellocsl.gallerylayoutmanager.R;
@@ -41,6 +42,29 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
             }
             notifyDataSetChanged();
         }
+    }
+
+    private static final Random RANDOM = new Random();
+
+    public int dataChange() {
+        int result = 0;
+        if (mItems != null) {
+            if (RANDOM.nextBoolean()) {
+                for (int i = 0; i < 10; i++) {
+                    mItems.add("Extra:" + i);
+                }
+                result = 1;
+            } else {
+                int size = mItems.size();
+                int cut = size / 2;
+                for (int i = size - 1; i > cut; i--) {
+                    mItems.remove(i);
+                }
+                result = -1;
+            }
+            notifyDataSetChanged();
+        }
+        return result;
     }
 
     public DemoAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
