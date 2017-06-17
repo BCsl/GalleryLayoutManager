@@ -136,11 +136,11 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         if (mState != null) {
             mState.mItemsFrames.clear();
         }
+        //when data set update keep the last selected position
         if (mCurSelectedPosition != -1) {
             mInitialSelectedPosition = mCurSelectedPosition;
-        } else {
-            mInitialSelectedPosition = 0;
         }
+        mInitialSelectedPosition = Math.min(Math.max(0, mInitialSelectedPosition), getItemCount() - 1);
         mFirstVisiblePosition = mInitialSelectedPosition;
         mLastVisiblePos = mInitialSelectedPosition;
         mCurSelectedPosition = -1;
