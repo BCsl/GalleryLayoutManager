@@ -16,16 +16,8 @@
 
 #### Gradle
 
-```java
-compile 'github.hellocsl:GalleryLayoutManager:{lastest-release-version}'
-```
-
-> 注意：如果你的项目已经引用了 `RecyclerView` ，那么应该这样引用，而且你的 `RecyclerView` 的引用版本必须大于 24.2.0
-
-```java
-compile ('github.hellocsl:GalleryLayoutManager:{lastest-release-version}'){
-    exclude group: 'com.android.support', module:'recyclerview-v7'
-}
+```groovy
+implementation 'github.hellocsl:GalleryLayoutManager:{latest-release-version}'
 ```
 
 ### 2、代码
@@ -36,7 +28,7 @@ compile ('github.hellocsl:GalleryLayoutManager:{lastest-release-version}'){
 
 ```java
 GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
-//layoutManager.attach(mPagerRecycleView);  默认选中位置为0
+//layoutManager.attach(mPagerRecycleView);  // 默认选中位置为0
 //不要使用 RecycleView#setLayoutManager 方法，而是使用 GalleryLayoutManager#attach 方法
 layoutManager.attach(mPagerRecycleView, 30);
 
@@ -66,9 +58,9 @@ public class ScaleTransformer implements GalleryLayoutManager.ItemTransformer {
 
     @Override
     public void transformItem(GalleryLayoutManager layoutManager, View item, float fraction) {
-        item.setPivotX(item.getWidth() / 2.f);
-        item.setPivotY(item.getHeight()/2.0f);
-        float scale = 1 - 0.3f * Math.abs(fraction);
+        item.setPivotX(item.getWidth() / 2.F);
+        item.setPivotY(item.getHeight() / 2.F);
+        float scale = 1 - 0.3F * Math.abs(fraction);
         item.setScaleX(scale);
         item.setScaleY(scale);
     }
