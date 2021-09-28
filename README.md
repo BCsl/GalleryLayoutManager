@@ -16,16 +16,8 @@ A custom LayoutManager to build a Gallery or a ViewPager like RecyclerView that 
 
 #### Gradle
 
-```java
-compile 'github.hellocsl:GalleryLayoutManager:{lastest-release-version}'
-```
-
-> Be care ：if you have used `RecyclerView` in your project , maybe your should use this library as below and your recyclerview-v7 requires API level 24.2.0 or higher
-
-```java
-compile ('github.hellocsl:GalleryLayoutManager:{lastest-release-version}'){
-    exclude group: 'com.android.support', module:'recyclerview-v7'
-}
+```groovy
+implementation 'github.hellocsl:GalleryLayoutManager:{latest-release-version}'
 ```
 
 ### 2、In your code
@@ -36,7 +28,7 @@ Use `GalleryLayoutManager#attach(RecycleView recycleView)` to setup `GalleryLayo
 
 ```java
 GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
-//layoutManager.attach(mPagerRecycleView);  default selected position is 0
+//layoutManager.attach(mPagerRecycleView);  // default selected position is 0
 layoutManager.attach(mPagerRecycleView, 30);
 
 //...
@@ -47,7 +39,7 @@ mPagerRecycleView.setAdapter(imageAdapter);
 #### Listen to selection change
 
 ```java
-layoutManager2.setCallbackInFling(true);//should receive callback when flinging, default is false
+layoutManager.setCallbackInFling(true);//should receive callback when flinging, default is false
 layoutManager.setOnItemSelectedListener(new GalleryLayoutManager.OnItemSelectedListener() {
     @Override
     public void onItemSelected(RecyclerView recyclerView, View item, int position) {
@@ -65,9 +57,9 @@ public class ScaleTransformer implements GalleryLayoutManager.ItemTransformer {
 
     @Override
     public void transformItem(GalleryLayoutManager layoutManager, View item, float fraction) {
-        item.setPivotX(item.getWidth() / 2.f);
-        item.setPivotY(item.getHeight()/2.0f);
-        float scale = 1 - 0.3f * Math.abs(fraction);
+        item.setPivotX(item.getWidth() / 2.F);
+        item.setPivotY(item.getHeight() / 2.F);
+        float scale = 1 - 0.3F * Math.abs(fraction);
         item.setScaleX(scale);
         item.setScaleY(scale);
     }
