@@ -21,13 +21,9 @@ android {
     }
 }
 
-def supportLibraryVersion = '25.3.0'
-def recycleView = "com.android.support:recyclerview-v7:$supportLibraryVersion"
-
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile recycleView
+    compile 'com.android.support:recyclerview-v7:25.3.0'
 }
 
 publish {
