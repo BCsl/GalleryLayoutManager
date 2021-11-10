@@ -23,6 +23,9 @@ import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
  * Created by chensuilun on 2016/11/18.
  */
 public class GalleryLayoutManager extends RecyclerView.LayoutManager implements RecyclerView.SmoothScroller.ScrollVectorProvider {
+
+    private static final boolean DEBUG = false;
+
     private static final String TAG = "GalleryLayoutManager";
     final static int LAYOUT_START = -1;
 
@@ -911,6 +914,18 @@ public class GalleryLayoutManager extends RecyclerView.LayoutManager implements 
         recyclerView.setLayoutManager(this);
         mSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.addOnScrollListener(mInnerScrollListener);
+
+        //SnapHelper dft implement an RecyclerView.OnFlingListener, so if there
+        //is only 3 item, fling from 1 to 0, the  onItemSelected callback will not call.
+        //so we set an OnFlingListener with no process, that is ok.
+        RecyclerView.OnFlingListener onFlingListener = new RecyclerView.OnFlingListener() {
+            @Override
+            public boolean onFling(final int velocityX, final int velocityY) {
+                Log.e(TAG, "onFling: onTouchEvent 1 mState=" + mState);
+                return false;
+            }
+        };
+        recyclerView.setOnFlingListener(onFlingListener);
     }
 
     RecyclerView mRecyclerView;
