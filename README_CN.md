@@ -2,7 +2,7 @@
 
 [English](./README.md)
 
-使用自定义 `LayoutManager` 实现 Android 中 `Gallery` 或者 `ViewPager` 控件的效果，支持垂直和水平两个方向，支持 `RecycleView` 的试图回收机制
+使用自定义 `LayoutManager` 实现 Android 中 `Gallery` 或者 `ViewPager` 控件的效果，支持垂直和水平两个方向，支持 `RecycleView` 的视图回收机制
 
 ## 效果
 
